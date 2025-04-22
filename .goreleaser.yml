@@ -1,0 +1,58 @@
+version: 2
+
+project_name: dynadump
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - main: .
+    binary: dynadump
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.Version={{.Version}}
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+
+brews:
+  - repository:
+      owner: kishaningithub
+      name: homebrew-tap
+    directory: Formula
+    homepage: https://github.com/kishaningithub/dynadump
+    description: Export your dynamoDB data as JSON
+    license: MIT
+
+nfpms:
+  - id: dynadump
+    package_name: dynadump
+    homepage: https://github.com/kishaningithub/dynadump
+    description: Export your dynamoDB data as JSON
+    maintainer: Kishan B <kishancs46@gmail.com>
+    license: MIT
+    formats:
+      - apk
+      - deb
+      - rpm
+
+kos:
+  - base_image: alpine
+    repositories:
+      - ghcr.io/kishaningithub/dynadump
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    tags:
+      - '{{.Version}}'
+      - latest
+    bare: true
+    preserve_import_paths: false
